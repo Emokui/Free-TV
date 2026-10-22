@@ -1,0 +1,8 @@
+config.properties
+*.keystore
+*.idsig
+out/
+*.apk
+__pycache__/
+.DS_Store
+reports/

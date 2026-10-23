@@ -182,6 +182,7 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, R
     private final Spring heroFocus = new Spring(0.28f, 0.85f, 0);
     private final RectF heroButton = new RectF();
     private Bitmap wallpaper;
+    private int wallpaperOverlayAlpha;
     private boolean destroyed;
     private int wallpaperVersion = -1;
     private Backdrop bgFrom, bgTo;     // null = gradient (no photo)
@@ -369,6 +370,7 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, R
     void resume() {
         if (running) return;
         running = true;
+        wallpaperOverlayAlpha = Math.round(Prefs.wallpaperOpacity() * 255f / 100f);
         loadWallpaper();
         checkNight(false);
         resumedAt = SystemClock.uptimeMillis();
@@ -843,9 +845,9 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, R
 
     // MARK: - Night look
 
-    /** Day or night right now (from the sun at your location); `animate`: with the transition. */
+    /** Day or night from the selected theme (including local wallpapers). */
     private void checkNight(boolean animate) {
-        boolean want = Wallpaper.exists(getContext()) || Prefs.isNight(System.currentTimeMillis());
+        boolean want = Prefs.isNight(System.currentTimeMillis());
         if (want == nightTarget) return;
         nightTarget = want;
         if (animate && running) {
@@ -922,9 +924,9 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, R
         lClockQuote.setColor(tone(L_DIM, 0xFF98989D));
         staleQuote.setColor(tone(L_FAINT, 0x99FFFFFF));
         if (wallpaper != null) {
-            lDate.setColor(0xFFF0F0F5);
-            lTab.setColor(0xFFE0E0E5);
-            lCardMeta.setColor(0xFFE0E0E5);
+            lDate.setColor(tone(L_DIM, 0xFFF0F0F5));
+            lTab.setColor(tone(L_DIM, 0xFFE0E0E5));
+            lCardMeta.setColor(tone(L_DIM, 0xFFE0E0E5));
         }
     }
 
@@ -2348,7 +2350,8 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, R
         if (wallpaper != null) {
             bitmapPaint.setAlpha(255);
             c.drawBitmap(wallpaper, null, screen, bitmapPaint);
-            c.drawColor(0x80000000);
+            // Keep the photo visible, with contrast for dark text by day and white text at night.
+            c.drawColor(tone((wallpaperOverlayAlpha << 24) | 0x00FFFFFF, wallpaperOverlayAlpha << 24));
             return;
         }
         long up = SystemClock.uptimeMillis();

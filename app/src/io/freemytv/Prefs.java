@@ -59,6 +59,13 @@ final class Prefs {
 
     static void setTheme(String v) { put("theme", v); }
 
+    /** Shared light/dark wallpaper overlay opacity, persisted only when confirmed. */
+    static int wallpaperOpacity() { return Math.max(0, Math.min(100, sp().getInt("wallpaper_opacity", 15))); }
+    static void setWallpaperOpacity(int percent) {
+        sp().edit().putInt("wallpaper_opacity", Math.max(0, Math.min(100, percent))).apply();
+        version++;
+    }
+
     /** The home screen's soft click when moving and opening. */
     static boolean sounds() { return sp().getBoolean("sounds", true); }
     static void setSounds(boolean on) { put("sounds", on); }

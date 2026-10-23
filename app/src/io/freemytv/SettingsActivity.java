@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ public class SettingsActivity extends Activity {
     private static final int IMAGE = 10, STORAGE = 11;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView status;
-    private Button mode, wallpaper, sounds, theme;
+    private Button mode, wallpaper, sounds, theme, opacity;
     private boolean importing, destroyed;
     private int browserGeneration;
     private final Runnable poll = new Runnable() {
@@ -72,13 +73,14 @@ public class SettingsActivity extends Activity {
         scroll.addView(menu);
         mode = button(menu, "桌面", this::chooseHome);
         wallpaper = button(menu, "选择本地壁纸", this::chooseWallpaper);
+        opacity = button(menu, "壁纸遮罩", this::chooseOpacity);
         button(menu, "恢复默认背景", () -> {
             if (importing) return;
             try { Wallpaper.clear(this); refresh(); toast("已恢复默认背景"); }
             catch (Exception e) { toast("操作失败：" + e.getMessage()); }
         });
         button(menu, "常用应用", this::chooseShelf);
-        theme = button(menu, "主题", () -> new AlertDialog.Builder(this).setTitle("默认背景主题")
+        theme = button(menu, "主题", () -> new AlertDialog.Builder(this).setTitle("桌面主题")
                 .setSingleChoiceItems(new String[] {"自动（18:00–06:00 深色）", "浅色", "深色"},
                         Arrays.asList("auto", "light", "dark").indexOf(Prefs.theme()), (d, which) -> {
                             Prefs.setTheme(new String[] {"auto", "light", "dark"}[which]); refresh(); d.dismiss();
@@ -88,7 +90,6 @@ public class SettingsActivity extends Activity {
             try { startActivity(new Intent(Settings.ACTION_SETTINGS)); }
             catch (ActivityNotFoundException e) { toast("此电视未提供系统设置入口"); }
         });
-        button(menu, "返回桌面", () -> startActivity(new Intent(this, HomeActivity.class)));
         setContentView(root);
         mode.requestFocus();
         refresh();
@@ -122,15 +123,49 @@ public class SettingsActivity extends Activity {
         updateText(mode, "桌面：" + (HomeMode.FREE.equals(s.optString("mode")) && !s.optBoolean("homeReverted") ? "Free My TV" : "原厂桌面"));
         wallpaper.setEnabled(!importing);
         updateText(wallpaper, importing ? "正在导入壁纸…" : Wallpaper.exists(this) ? "更换本地壁纸" : "选择本地壁纸");
+        updateText(opacity, "壁纸遮罩：" + Prefs.wallpaperOpacity() + "%");
         updateText(sounds, "按键音效：" + (Prefs.sounds() ? "开启" : "关闭"));
-        updateText(theme, Wallpaper.exists(this) ? "默认背景主题（本地壁纸固定深色）" : "默认背景主题：" + ("light".equals(Prefs.theme()) ? "浅色" : "dark".equals(Prefs.theme()) ? "深色" : "自动"));
+        updateText(theme, "桌面主题：" + ("light".equals(Prefs.theme()) ? "浅色" : "dark".equals(Prefs.theme()) ? "深色" : "自动"));
         String error = s.optString("error");
-        updateText(status, busy ? Chinese.text(s.optString("busy")) : !error.isEmpty() ? Chinese.text(error) : "1.2 中文精简优化版");
+        updateText(status, busy ? Chinese.text(s.optString("busy")) : !error.isEmpty() ? Chinese.text(error) : "1.4 中文精简优化版");
     }
     private static void updateText(TextView view, String text) {
         if (!text.contentEquals(view.getText())) view.setText(text);
     }
     private void toast(String message) { Toast.makeText(this, message, Toast.LENGTH_LONG).show(); }
+
+    private void chooseOpacity() {
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(dp(24), dp(12), dp(24), dp(12));
+        TextView value = text("", 20);
+        content.addView(value);
+        TextView hint = text("左右键调整，每次 1%；上下键选择按钮。\n浅色为白色遮罩，深色为黑色遮罩。\n0% 无遮罩，100% 完全遮住壁纸。", 16);
+        content.addView(hint);
+        SeekBar slider = new SeekBar(this);
+        slider.setMax(100);
+        slider.setKeyProgressIncrement(1);
+        slider.setProgress(Prefs.wallpaperOpacity());
+        value.setText("遮罩不透明度：" + slider.getProgress() + "%");
+        slider.setContentDescription(value.getText());
+        slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
+                value.setText("遮罩不透明度：" + progress + "%");
+                bar.setContentDescription(value.getText());
+            }
+            @Override public void onStartTrackingTouch(SeekBar bar) {}
+            @Override public void onStopTrackingTouch(SeekBar bar) {}
+        });
+        content.addView(slider, new LinearLayout.LayoutParams(-1, dp(60)));
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle("壁纸遮罩")
+                .setView(content).setPositiveButton("保存", (d, which) -> {
+                    Prefs.setWallpaperOpacity(slider.getProgress()); refresh();
+                }).setNeutralButton("恢复 15%", (d, which) -> {
+                    Prefs.setWallpaperOpacity(15); refresh();
+                }).setNegativeButton("取消", null).create();
+        dialog.setOnShowListener(d -> slider.requestFocus());
+        dialog.show();
+    }
 
     private void chooseHome() {
         new AlertDialog.Builder(this).setTitle("选择桌面").setItems(new String[] {"启用 Free My TV", "恢复原厂桌面"}, (d, which) -> {

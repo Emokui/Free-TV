@@ -24,7 +24,7 @@ command -v "$JAVAC" >/dev/null 2>&1 || { echo "JDK not found. Install JDK 17 and
 # --- Settings: config.properties -> Config.java
 if [ ! -f config.properties ]; then
   cp config.example.properties config.properties
-  echo "Created config.properties: add your TMDB key and your city there (optional), then build again."
+  echo "Created config.properties with the default language and assistant setting."
 fi
 prop() {
   local v
@@ -38,7 +38,6 @@ number() {
   printf '%s' "$v"
 }
 ASSIST=false; [ "$(prop disable_assistant false)" = "true" ] && ASSIST=true
-ANIMATION=false; [ "$(prop hide_animation false)" = "true" ] && ANIMATION=true
 
 rm -rf out && mkdir -p out/gen/io/freemytv out/classes
 cat > out/gen/io/freemytv/Config.java <<EOF
@@ -48,12 +47,8 @@ package io.freemytv;
 final class Config {
     private Config() {}
 
-    static final String TMDB_KEY = "$(prop tmdb_key '')";
-    static final String WATCHMODE_KEY = "$(prop watchmode_key '')";
-    static final String TMDB_REGION = "$(prop tmdb_region US)";
     static final String LANGUAGE = "$(prop language auto)";
     static final boolean DISABLE_ASSISTANT = $ASSIST;
-    static final boolean HIDE_ANIMATION = $ANIMATION;
 }
 EOF
 

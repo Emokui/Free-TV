@@ -57,7 +57,7 @@ public class SettingsActivity extends Activity {
         LinearLayout intro = new LinearLayout(this);
         intro.setOrientation(LinearLayout.VERTICAL);
         root.addView(intro, new LinearLayout.LayoutParams(0, -1, 0.85f));
-        intro.addView(text("Free My TV", 32));
+        intro.addView(text("Free TV", 32));
         intro.addView(text("中文精简版", 22));
         intro.addView(text("Android 8.0+ · 支持 ARMv7", 16));
         TextView hint = text("壁纸支持电视存储和 U 盘图片。\n导入后可移除 U 盘。\n\n主页常用应用支持长按确定键调整顺序。", 17);
@@ -120,14 +120,14 @@ public class SettingsActivity extends Activity {
         JSONObject s = HomeMode.state(this);
         boolean busy = switching(s);
         mode.setEnabled(!busy);
-        updateText(mode, "桌面：" + (HomeMode.FREE.equals(s.optString("mode")) && !s.optBoolean("homeReverted") ? "Free My TV" : "原厂桌面"));
+        updateText(mode, "桌面：" + (HomeMode.FREE.equals(s.optString("mode")) && !s.optBoolean("homeReverted") ? "Free TV" : "原厂桌面"));
         wallpaper.setEnabled(!importing);
         updateText(wallpaper, importing ? "正在导入壁纸…" : Wallpaper.exists(this) ? "更换本地壁纸" : "选择本地壁纸");
         updateText(opacity, "壁纸遮罩：" + Prefs.wallpaperOpacity() + "%");
         updateText(sounds, "按键音效：" + (Prefs.sounds() ? "开启" : "关闭"));
         updateText(theme, "桌面主题：" + ("light".equals(Prefs.theme()) ? "浅色" : "dark".equals(Prefs.theme()) ? "深色" : "自动"));
         String error = s.optString("error");
-        updateText(status, busy ? Chinese.text(s.optString("busy")) : !error.isEmpty() ? Chinese.text(error) : "1.4.2 中文精简优化版");
+        updateText(status, busy ? Chinese.text(s.optString("busy")) : !error.isEmpty() ? Chinese.text(error) : "1.4.3 中文精简优化版");
     }
     private static void updateText(TextView view, String text) {
         if (!text.contentEquals(view.getText())) view.setText(text);
@@ -168,7 +168,7 @@ public class SettingsActivity extends Activity {
     }
 
     private void chooseHome() {
-        new AlertDialog.Builder(this).setTitle("选择桌面").setItems(new String[] {"启用 Free My TV", "恢复原厂桌面"}, (d, which) -> {
+        new AlertDialog.Builder(this).setTitle("选择桌面").setItems(new String[] {"启用 Free TV", "恢复原厂桌面"}, (d, which) -> {
             String message = which == 0 ? "将设为默认桌面，并停用原项目列出的推广应用。可在此恢复原厂桌面和应用。电视可能提示允许 USB 调试。"
                     : "将恢复原厂桌面，并重新启用此前由本应用停用的应用。";
             new AlertDialog.Builder(this).setTitle("切换桌面").setMessage(message).setPositiveButton("继续", (confirm, ok) -> {

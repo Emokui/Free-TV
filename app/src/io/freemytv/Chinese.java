@@ -61,8 +61,8 @@ final class Chinese {
             case "Switching the home screen and screensaver…": return "正在切换桌面和屏保…";
             case "Android didn't accept the new home screen": return "Android 未接受新桌面";
             case "Turning off apps (": return "正在停用应用（";
-            case "Measuring Free My TV…": return "正在测量 Free My TV 性能…";
-            case "Couldn't turn on Free My TV: ": return "无法启用 Free My TV：";
+            case "Measuring Free TV…": return "正在测量 Free TV 性能…";
+            case "Couldn't turn on Free TV: ": return "无法启用 Free TV：";
             case "Turning the apps back on…": return "正在重新启用应用…";
             case "Turning apps back on (": return "正在重新启用应用（";
             case "Restoring the original home screen…": return "正在恢复原厂桌面…";
@@ -70,13 +70,13 @@ final class Chinese {
             case "the original home screen": return "原厂桌面";
             case "Original mode, but I couldn't turn back on: ": return "已恢复原厂模式，但无法重新启用：";
             case "Couldn't go back to the original: ": return "无法恢复原厂模式：";
-            case "Free My TV's home screen crashed 3 times in a row; I switched back to the original one.": return "Free My TV 桌面已连续崩溃 3 次，已自动恢复原厂桌面。";
+            case "Free TV's home screen crashed 3 times in a row; I switched back to the original one.": return "Free TV 桌面已连续崩溃 3 次，已自动恢复原厂桌面。";
             case "the home screen": return "桌面";
             case "the screensaver": return "屏保";
-            case "Couldn't check Free My TV: ": return "无法检查 Free My TV：";
+            case "Couldn't check Free TV: ": return "无法检查 Free TV：";
             case "The TV update turned back on ": return "电视更新后重新启用了：";
             case "Turned off what was missing: ": return "已补充停用：";
-            case "The TV was updated; Free My TV is still on.": return "电视已更新，Free My TV 仍处于启用状态。";
+            case "The TV was updated; Free TV is still on.": return "电视已更新，Free TV 仍处于启用状态。";
             case "Connecting…": return "正在连接…";
             case "Accept “Allow USB debugging?” on the TV (tick “Always allow”).": return "请在电视上允许 USB 调试，并勾选“始终允许”。";
             case "Language": return "语言";
@@ -182,18 +182,18 @@ final class Chinese {
             case "ADB refused the command": return "ADB 拒绝执行命令";
             case "invalid ADB message": return "ADB 消息无效";
             case "ADB message too large": return "ADB 消息过大";
-            case "Free My TV's home screen ran into a problem.\nGoing back to the TV's original home screen…": return "Free My TV 桌面发生错误。\n正在恢复电视原厂桌面…";
+            case "Free TV's home screen ran into a problem.\nGoing back to the TV's original home screen…": return "Free TV 桌面发生错误。\n正在恢复电视原厂桌面…";
             case "the TV's first setup saved the Wi-Fi, and turning it off would erase those networks. In Settings → Network & Internet, forget the network and connect again (networks out of range don't show there: Claude Code can remove them from your computer), then try once more.": return "电视初始设置程序保存了 Wi-Fi，停用它会删除这些网络。请在“设置 → 网络和互联网”中忘记网络并重新连接，然后再试。范围外的网络不会显示，可通过电脑上的 ADB 移除。";
             default:
-                String[] prefixes = {"Couldn't check Free My TV: ", "Couldn't turn on Free My TV: ",
+                String[] prefixes = {"Couldn't check Free TV: ", "Couldn't turn on Free TV: ",
                         "Couldn't go back to the original: ", "Original mode, but I couldn't turn back on: ", "Error: "};
                 for (String p : prefixes) if (english.startsWith(p)) return text(p) + text(english.substring(p.length()));
                 String p = "OK adds or removes (up to ", s = "). ← → change the order.";
                 if (english.startsWith(p) && english.endsWith(s))
                     return "确定键添加或移除（最多 " + english.substring(p.length(), english.length() - s.length()) + " 个）· ← → 调整顺序";
-                p = "Free My TV is on: new home screen and screensaver, "; s = " apps turned off.";
+                p = "Free TV is on: new home screen and screensaver, "; s = " apps turned off.";
                 if (english.startsWith(p) && english.endsWith(s))
-                    return "Free My TV 已启用：新桌面和屏保，已停用 " + english.substring(p.length(), english.length() - s.length()) + " 个应用。";
+                    return "Free TV 已启用：新桌面和屏保，已停用 " + english.substring(p.length(), english.length() - s.length()) + " 个应用。";
                 p = "On · "; s = " titles from the TV's apps, 3 new ones every hour.";
                 if (english.startsWith(p) && english.endsWith(s))
                     return "已开启 · 来自电视应用的 " + english.substring(p.length(), english.length() - s.length()) + " 部影视，每小时更新 3 部。";

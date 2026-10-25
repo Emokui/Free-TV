@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Original ⇄ Free My TV. "free": our home screen and screensaver, and the apps in the lists below turned off
+ * Original ⇄ Free TV. "free": our home screen and screensaver, and the apps in the lists below turned off
  * (pm disable-user: still installed, back with one button). "original": everything as it came from the factory.
  *
  * It all goes through the TV's own ADB (Adb, 127.0.0.1:5555), which you allow once on the TV. The switches run as
@@ -50,7 +50,7 @@ final class HomeMode {
     static final String GOOGLE_SETUP = "com.google.android.tungsten.setupwraith";
 
     /**
-     * Turned off in Free My TV mode, when the TV has them. Google extras first, then TV-maker extras (TCL here; add
+     * Turned off in Free TV mode, when the TV has them. Google extras first, then TV-maker extras (TCL here; add
      * your brand's, see the README). The TV's own home screen and screensaver are added at switch time.
      */
     static final String[] DEBLOAT = {
@@ -151,12 +151,12 @@ final class HomeMode {
         ModeJob.schedule(c, ModeJob.REVERT, null, 0);
     }
 
-    /** After the TV boots (and after a TV update): wait for the system to settle and check Free My TV mode. */
+    /** After the TV boots (and after a TV update): wait for the system to settle and check Free TV mode. */
     static void bootCheck(Context c) {
         ModeJob.schedule(c, ModeJob.VERIFY, null, 45_000);
     }
 
-    /** After an update of this app: complete Free My TV mode if anything is missing. */
+    /** After an update of this app: complete Free TV mode if anything is missing. */
     static void verify(Context c) {
         ModeJob.schedule(c, ModeJob.VERIFY, null, 0);
     }
@@ -267,7 +267,7 @@ final class HomeMode {
             Set<String> disabled = new HashSet<>(stringList(state(c), "disabled"));
             Set<String> present = packages(adb, "");
             Set<String> keptOff = new HashSet<>(stringList(state(c), "keptOff"));
-            // Off now and not on our list: the person turned it off, unless an earlier install of Free My TV did (its
+            // Off now and not on our list: the person turned it off, unless an earlier install of Free TV did (its
             // list lives in the TV's settings too, since an uninstall erases our state file).
             Set<String> ours = recorded(adb);
             for (String pkg : packages(adb, "-d")) {
@@ -298,15 +298,15 @@ final class HomeMode {
                     .put("disabled", new JSONArray(sorted(disabled))).put("setupHome", setupHome);
             save(c, s);
 
-            notice(c, Ui.tr("Free My TV ligado: Início e tela de descanso novos, " + disabled.size() + " apps desligados.",
-                    "Free My TV 已启用，已停用 " + disabled.size() + " 个应用。"));
-            busy(c, Ui.tr("Medindo o Free My TV…", "Measuring Free My TV…"));
+            notice(c, Ui.tr("Free TV ligado: Início e tela de descanso novos, " + disabled.size() + " apps desligados.",
+                    "Free TV 已启用，已停用 " + disabled.size() + " 个应用。"));
+            busy(c, Ui.tr("Medindo o Free TV…", "Measuring Free TV…"));
             measureHomeTime(c, adb, FREE);
             done(c, null);
             adb.shell("am start -a android.intent.action.MAIN -c android.intent.category.HOME");
             ModeJob.schedule(c, ModeJob.MEMORY, FREE, 120_000);
         } catch (Exception e) {
-            done(c, Ui.tr("Não deu para ligar o Free My TV: ", "Couldn't turn on Free My TV: ") + (Ui.zh ? Chinese.text(e.getMessage() == null ? "" : e.getMessage()) : Ui.ru ? Russian.text(e.getMessage() == null ? "" : e.getMessage()) : e.getMessage()));
+            done(c, Ui.tr("Não deu para ligar o Free TV: ", "Couldn't turn on Free TV: ") + (Ui.zh ? Chinese.text(e.getMessage() == null ? "" : e.getMessage()) : Ui.ru ? Russian.text(e.getMessage() == null ? "" : e.getMessage()) : e.getMessage()));
         }
     }
 
@@ -406,8 +406,8 @@ final class HomeMode {
 
                 s.put("homeReverted", true).put("disabled", kept);
                 save(app, s);
-                notice(app, Ui.tr("O Início do Free My TV caiu 3 vezes seguidas; voltei para o Início original.",
-                        "Free My TV's home screen crashed 3 times in a row; I switched back to the original one."));
+                notice(app, Ui.tr("O Início do Free TV caiu 3 vezes seguidas; voltei para o Início original.",
+                        "Free TV's home screen crashed 3 times in a row; I switched back to the original one."));
                 adb.shell("am start -a android.intent.action.MAIN -c android.intent.category.HOME");
             } catch (Exception e) {
                 AppLog.w("could not give the home screen back: " + e.getMessage());
@@ -416,7 +416,7 @@ final class HomeMode {
     }
 
     /**
-     * In Free My TV mode, checks that everything is still as we left it (the listed apps off, our home screen and
+     * In Free TV mode, checks that everything is still as we left it (the listed apps off, our home screen and
      * screensaver) and completes whatever is missing, with a notice. Runs after the TV boots (TV updates can turn
      * things back on) and after an update of this app.
      */
@@ -448,7 +448,7 @@ final class HomeMode {
                     }
                 }
                 Set<String> disabled = new HashSet<>(stringList(s, "disabled"));
-                // Off before Free My TV: turned off again if a TV update brings one back, but never handed to
+                // Off before Free TV: turned off again if a TV update brings one back, but never handed to
                 // Original to turn on.
                 List<String> keptOff = stringList(s, "keptOff");
                 for (String pkg : sorted(wanted)) {
@@ -473,14 +473,14 @@ final class HomeMode {
                 latest.put("disabled", new JSONArray(sorted(disabled)));
                 save(app, latest);
             } catch (Exception e) {
-                notice(app, Ui.tr("Não consegui conferir o Free My TV: ", "Couldn't check Free My TV: ") + (Ui.zh ? Chinese.text(e.getMessage() == null ? "" : e.getMessage()) : Ui.ru ? Russian.text(e.getMessage() == null ? "" : e.getMessage()) : e.getMessage()));
+                notice(app, Ui.tr("Não consegui conferir o Free TV: ", "Couldn't check Free TV: ") + (Ui.zh ? Chinese.text(e.getMessage() == null ? "" : e.getMessage()) : Ui.ru ? Russian.text(e.getMessage() == null ? "" : e.getMessage()) : e.getMessage()));
                 return;
             }
             if (!fixed.isEmpty()) {
                 notice(app, (updated ? Ui.tr("A atualização da TV religou ", "The TV update turned back on ")
                         : Ui.tr("Desliguei o que faltava: ", "Turned off what was missing: ")) + String.join(", ", fixed) + ".");
             } else if (updated) {
-                notice(app, Ui.tr("A TV foi atualizada; o Free My TV continua igual.", "The TV was updated; Free My TV is still on."));
+                notice(app, Ui.tr("A TV foi atualizada; o Free TV continua igual.", "The TV was updated; Free TV is still on."));
             }
         }
     }
@@ -762,7 +762,7 @@ final class HomeMode {
     }
 
     /**
-     * What Free My TV turned off, kept in the TV's own settings too: an uninstall or Clear data erases our state file,
+     * What Free TV turned off, kept in the TV's own settings too: an uninstall or Clear data erases our state file,
      * and a new install must still tell its own work from what the person had turned off (#142).
      */
     private static final String RECORD = "free_my_tv_disabled";

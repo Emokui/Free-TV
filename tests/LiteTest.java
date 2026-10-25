@@ -9,6 +9,7 @@ public class LiteTest {
         if (!pass) throw new AssertionError(name);
     }
     public static void main(String[] args) {
+        cachePolicy();
         // A Settings focus animation must not step the clock/tabs group, but must keep its own frames running.
         Spring[] top = {new Spring(0.26f,0.85f,0), new Spring(0.26f,0.85f,0),
                 new Spring(0.26f,0.85f,0), new Spring(0.26f,0.85f,0)};
@@ -46,6 +47,37 @@ public class LiteTest {
             LegacyCleanup.withoutService(ours + ":untrusted'entry", ours);
             throw new AssertionError("unsafe component must not be written");
         } catch (IllegalArgumentException expected) {}
-        System.out.println("Lite tests passed: image sampling, upgrade preservation, legacy service cleanup.");
+        System.out.println("Lite tests passed: app cache, image sampling, upgrade preservation, legacy service cleanup.");
+    }
+
+    private static void cachePolicy() {
+        AppListCache cache = new AppListCache();
+        check(cache.needsReload(100, 0, "zh"), "cold cache loads");
+        AppListCache.Request first = cache.begin(100, 0, "zh");
+        check(cache.begin(110, 0, "zh") == null, "overlapping resumes coalesce");
+        check(cache.complete(first, 200, 0, "zh"), "first result accepted");
+        check(!cache.needsReload(201, 0, "zh"), "normal return reuses apps");
+        check(!cache.needsReload(200 + AppListCache.MAX_AGE_MS - 1, 0, "zh"), "cache valid before expiry");
+        check(cache.needsReload(200 + AppListCache.MAX_AGE_MS, 0, "zh"), "expiry refreshes even without callbacks");
+        check(cache.needsReload(201, 1, "zh"), "shelf editing refreshes");
+        check(cache.needsReload(201, 0, "en"), "language editing refreshes");
+        cache.invalidate();
+        AppListCache.Request changed = cache.begin(300, 0, "zh");
+        cache.invalidate(); // Package changed again while the background query was in flight.
+        check(!cache.complete(changed, 310, 0, "zh"), "stale package results rejected");
+        AppListCache.Request retry = cache.begin(311, 0, "zh");
+        check(retry != null, "changed package is queried again");
+        check(!cache.complete(retry, 320, 1, "zh"), "stale shelf order rejected");
+        AppListCache.Request shelf = cache.begin(321, 1, "zh");
+        check(!cache.complete(shelf, 330, 1, "en"), "stale language rejected");
+        AppListCache.Request language = cache.begin(331, 1, "en");
+        cache.fail(language);
+        check(cache.needsReload(332, 1, "en"), "failed query can retry");
+        AppListCache.Request good = cache.begin(333, 1, "en");
+        check(cache.complete(good, 340, 1, "en"), "latest query accepted");
+        check(!cache.complete(first, 341, 0, "zh"), "old completion cannot replace current cache");
+        check(!cache.needsReload(342, 1, "en"), "accepted state stays current");
+        check(AppListCache.withinBurst(100, 1599) && !AppListCache.withinBurst(100, 1600)
+                && !AppListCache.withinBurst(0, 100), "Home burst boundary and cold start");
     }
 }

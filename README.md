@@ -1,8 +1,8 @@
-# Free My TV · Android 8 中文精简版
+# Free TV · Android 8 中文精简版
 
 一个面向电视遥控器的简洁桌面：时钟、本地壁纸和常用应用。支持 **Android 8.0 及以上**，包含 ARMv7 / armeabi-v7a 电视；APK 不含原生库，为通用架构安装包。
 
-**当前版本：1.4.2** · [下载安装包](https://github.com/Emokui/free-my-tv-android8-zh-lite/releases/latest) · [版本记录](https://github.com/Emokui/free-my-tv-android8-zh-lite/releases)
+**当前版本：1.4.3** · [下载安装包](https://github.com/Emokui/Free-TV/releases/latest) · [版本记录](https://github.com/Emokui/Free-TV/releases)
 
 本项目基于 [simbasjungles/free-my-tv](https://github.com/simbasjungles/free-my-tv)，是独立的 Android 定制版，不代表上游官方发行。
 
@@ -21,22 +21,22 @@
 
 ## 安装与升级
 
-从 [Releases](https://github.com/Emokui/free-my-tv-android8-zh-lite/releases/latest) 下载 APK，用电视文件管理器安装，或在电脑上通过 ADB 安装：
+从 [Releases](https://github.com/Emokui/Free-TV/releases/latest) 下载 APK，用电视文件管理器安装，或在电脑上通过 ADB 安装：
 
 ```sh
 adb connect TV_IP:5555
-adb install -r FreeMyTV-Android8-v7a-zh-Lite-1.4.2.apk
+adb install -r Free-TV-Android8-v7a-zh-Lite-1.4.3.apk
 ```
 
 将 `TV_IP` 替换为电视的局域网 IP，并在电视上允许 USB/网络调试。
 
-| 已安装版本 | 升级到 1.4.2 |
+| 已安装版本 | 升级到 1.4.3 |
 |---|---|
 | 本仓库提供的 1.3、1.3.1、1.4、1.4.1 | 同签名，可覆盖安装，保留设置与壁纸 |
 | 本仓库旧版 1.2 及更早版本 | 原签名密钥已丢失，需要卸载旧版，会清除设置、排序和内部壁纸 |
 | 上游官方包或自行构建的不同签名版本 | 无法直接覆盖安装 |
 
-需要卸载时，先在旧版设置中恢复“原厂桌面”，并保留壁纸的原始图片，再卸载旧版。首次启用本桌面：打开 Free My TV → 桌面 → 启用 Free My TV；按提示允许电视自身的 ADB 调试。该操作会切换默认桌面，并停用上游适配名单中的部分应用，可通过“恢复原厂桌面”恢复。
+需要卸载时，先在旧版设置中恢复“原厂桌面”，并保留壁纸的原始图片，再卸载旧版。首次启用本桌面：打开 Free TV → 桌面 → 启用 Free TV；按提示允许电视自身的 ADB 调试。该操作会切换默认桌面，并停用上游适配名单中的部分应用，可通过“恢复原厂桌面”恢复。
 
 ## 遥控器操作
 
@@ -61,6 +61,7 @@ adb install -r FreeMyTV-Android8-v7a-zh-Lite-1.4.2.apk
 
 ## 近期更新
 
+- **1.4.3**：应用更名为 Free TV，仓库更名为 Free-TV；保持包名和签名，可覆盖安装。
 - **1.4.2**：彻底移除影视推荐及相关配置；清理推荐导航、动画和图片缓冲，固定显示时钟与本地壁纸。
 - **1.4.1**：移植上游应用列表缓存、连续 Home 刷新合并、Android 8–12 玻璃绘制、图标缩小与圆角抗锯齿修复；缓存会在应用、常用应用选择或语言变化后刷新。
 - **1.4**：新增可调壁纸遮罩，默认 15%。

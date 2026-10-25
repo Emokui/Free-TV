@@ -6,6 +6,8 @@
 
 本项目基于 [simbasjungles/free-my-tv](https://github.com/simbasjungles/free-my-tv)，是独立的 Android 定制版，不代表上游官方发行。
 
+![桌面效果：自定义壁纸、时钟和常用应用](screenshot.png)
+
 ## 功能
 
 - 简体中文界面，显示时间与日期。

@@ -127,7 +127,7 @@ public class SettingsActivity extends Activity {
         updateText(sounds, "按键音效：" + (Prefs.sounds() ? "开启" : "关闭"));
         updateText(theme, "桌面主题：" + ("light".equals(Prefs.theme()) ? "浅色" : "dark".equals(Prefs.theme()) ? "深色" : "自动"));
         String error = s.optString("error");
-        updateText(status, busy ? Chinese.text(s.optString("busy")) : !error.isEmpty() ? Chinese.text(error) : "1.4 中文精简优化版");
+        updateText(status, busy ? Chinese.text(s.optString("busy")) : !error.isEmpty() ? Chinese.text(error) : "1.4.2 中文精简优化版");
     }
     private static void updateText(TextView view, String text) {
         if (!text.contentEquals(view.getText())) view.setText(text);

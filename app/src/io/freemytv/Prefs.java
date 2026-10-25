@@ -17,6 +17,7 @@ final class Prefs {
     /** Bumped by every change: screens compare it to know when to redraw. */
     static volatile int version;
     static volatile int wallpaperVersion;
+    static int shelfVersion;
 
     private static Context app;
 
@@ -85,6 +86,7 @@ final class Prefs {
         StringBuilder sb = new StringBuilder();
         for (String p : packages) sb.append(sb.length() == 0 ? "" : ",").append(p);
         put("shelf", sb.toString());
+        shelfVersion++;
     }
 
     static boolean isNight(long now) {

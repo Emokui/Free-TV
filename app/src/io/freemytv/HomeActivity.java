@@ -65,10 +65,7 @@ public class HomeActivity extends Activity {
         super.onDestroy();
     }
 
-    @Override public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-        if (level >= TRIM_MEMORY_COMPLETE) Recs.get(this).trim();
-    }
+
 
     @Override public boolean dispatchKeyEvent(KeyEvent event) {
         if (home != null && home.onKey(event)) return true;

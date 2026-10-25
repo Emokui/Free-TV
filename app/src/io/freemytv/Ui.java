@@ -3,6 +3,7 @@ package io.freemytv;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -141,6 +142,34 @@ final class Ui {
 
     static float clamp(float v) {
         return Math.max(0, Math.min(1, v));
+    }
+
+    /** Largest 2w×2h step `downscale` takes (about 10 MB). */
+    private static final long SMOOTH_STEP_PIXELS = 2_600_000;
+
+    /**
+     * Filtered down to w × h without jagged edges: bilinear filtering reads only 2×2 pixels, so no step shrinks more
+     * than 2×. Halves while it can; when over 1.5× is left, goes up to 2w × 2h and halves exactly, else one last step.
+     * Never recycles src; may return it (when it already has the size).
+     */
+    static Bitmap downscale(Bitmap src, int w, int h) {
+        w = Math.max(1, w);
+        h = Math.max(1, h);
+        Bitmap b = src;
+        while (b.getWidth() / 2 >= w && b.getHeight() / 2 >= h) {
+            Bitmap half = Bitmap.createScaledBitmap(b, b.getWidth() / 2, b.getHeight() / 2, true);
+            if (b != src) b.recycle();
+            b = half;
+        }
+        if ((2 * b.getWidth() > 3 * w || 2 * b.getHeight() > 3 * h) && 4L * w * h <= SMOOTH_STEP_PIXELS) {
+            Bitmap twice = Bitmap.createScaledBitmap(b, 2 * w, 2 * h, true);
+            if (b != src) b.recycle();
+            b = twice;
+        }
+        if (b.getWidth() == w && b.getHeight() == h) return b;
+        Bitmap out = Bitmap.createScaledBitmap(b, w, h, true);
+        if (b != src && b != out) b.recycle();
+        return out;
     }
 
     static String tr(String pt, String english) {

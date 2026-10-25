@@ -77,7 +77,7 @@ final class Shaders {
 
     /**
      * Glass in a rounded-corner shape. The glass background comes from `frost`: the aurora without detail in a 48×27
-     * image computed on the CPU (Frost), or the blurred recommendation image (Backdrop), scaled up with linear
+     * image computed on the CPU (Frost), or the blurred background image, scaled up with linear
      * filtering. That is the frosted glass, at one texture read per pixel (a TV GPU such as the PowerVR BXE-4-32 can't
      * afford to recompute the aurora at every glass pixel).
      * tint: color and strength of the smoky tint; glow: accent color rising from the bottom; lift: extra brightness

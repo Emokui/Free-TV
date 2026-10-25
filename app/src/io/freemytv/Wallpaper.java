@@ -72,7 +72,10 @@ final class Wallpaper {
                 source = turned;
             }
             // Match the actual UI resolution, with a centered crop and no stretching.
-            int width = Backdrop.W, height = Backdrop.H;
+            android.util.DisplayMetrics metrics = c.getResources().getDisplayMetrics();
+            int longest = Math.max(metrics.widthPixels, metrics.heightPixels);
+            float uiScale = longest > 0 ? Math.min(1f, longest / 1920f) : 1f;
+            int width = Math.max(1, Math.round(1920 * uiScale)), height = Math.max(1, Math.round(1080 * uiScale));
             output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
             canvas.drawColor(0xFF000000);

@@ -43,11 +43,8 @@ final class Spanish {
             case "Preview": return "Ver ahora";
             case "On the TV: tick “Always allow” and press OK.": return "En el TV: marca “Permitir siempre” y presiona OK.";
             case "RECOMMENDATIONS": return "RECOMENDACIONES";
-            case "No TMDB key: see the README (config.properties).": return "Sin clave de TMDB: consulta el README (config.properties).";
             case "Error: ": return "Error: ";
             case "Fetching titles…": return "Buscando títulos…";
-            case "This product uses the TMDB API but is not endorsed or certified by TMDB.": return "Este producto usa la API de TMDB, sin respaldo ni certificación de TMDB.";
-            case "Links to the titles by Watchmode.": return "Enlaces a los títulos por Watchmode.";
             case "COMPARISON": return "COMPARACIÓN";
             case "Home button": return "Botón Inicio";
             case "Free memory": return "Memoria libre";

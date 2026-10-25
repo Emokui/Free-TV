@@ -45,11 +45,8 @@ final class Chinese {
             case "Preview": return "预览";
             case "On the TV: tick “Always allow” and press OK.": return "请在电视上勾选“始终允许”，然后按确定键。";
             case "RECOMMENDATIONS": return "影视推荐";
-            case "No TMDB key: see the README (config.properties).": return "未配置 TMDB 密钥，请参阅 README（config.properties）。";
             case "Error: ": return "错误：";
             case "Fetching titles…": return "正在获取影视推荐…";
-            case "Links to the titles by Watchmode.": return "影视播放链接由 Watchmode 提供。";
-            case "This product uses the TMDB API but is not endorsed or certified by TMDB.": return "本产品使用 TMDB API，但未经 TMDB 认可或认证。";
             case "COMPARISON": return "性能对比";
             case "Home button": return "主页键响应";
             case "Free memory": return "可用内存";
